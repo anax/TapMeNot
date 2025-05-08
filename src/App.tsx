@@ -74,22 +74,47 @@ function App() {
     setTimeout(() => setIsAnimating(false), 200)
   }
 
-  const saveScore = () => {
-    const newEntry: LeaderboardEntry = {
-      name: playerName,
-      points,
-      taps: totalTaps,
-      multiplier,
-      date: new Date().toLocaleDateString()
+  const saveScore = async () => {
+    const telegramUserId = WebApp.initDataUnsafe?.user?.id;
+
+    if (!telegramUserId) {
+      WebApp.showAlert('Error: Could not identify your Telegram user ID.');
+      return;
     }
 
-    const updatedLeaderboard = [...leaderboard, newEntry]
-      .sort((a, b) => b.points - a.points)
-      .slice(0, 10) // Keep only top 10
+    try {
+      const response = await fetch('/api/points', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          telegramUserId,
+          points,
+          taps: totalTaps,
+          multiplier,
+          playerName,
+        }),
+      });
 
-    setLeaderboard(updatedLeaderboard)
-    localStorage.setItem('tapMeNotLeaderboard', JSON.stringify(updatedLeaderboard))
-    WebApp.showAlert('Score saved to leaderboard!')
+      const data = await response.json();
+
+      if (data.success) {
+        WebApp.showAlert('Score saved to the server!');
+        // Optionally update local state with the server's response if needed
+        // For example, if the server returns the updated user data:
+        // setPoints(data.data.points);
+        // setTotalTaps(data.data.taps);
+        // setMultiplier(data.data.multiplier);
+        // setPlayerName(data.data.playerName);
+      } else {
+        WebApp.showAlert(`Error saving score: ${data.error || 'Something went wrong.'}`);
+        console.error('Error saving score:', data);
+      }
+    } catch (error) {
+      WebApp.showAlert('Failed to connect to the server. Please try again later.');
+      console.error('Error sending score to backend:', error);
+    }
   }
 
   const handleNameChange = (newName: string) => {

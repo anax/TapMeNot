@@ -145,6 +145,7 @@ function App() {
   
       const data = await response.json();
       console.log('Success:', data);
+      WebApp.showAlert(`Sucess: ${data}`);
       
     } catch (error) {
       console.error('Full fetch error:', error);

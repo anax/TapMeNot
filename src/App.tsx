@@ -139,14 +139,16 @@ function App() {
       });
   
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save');
       }
   
       const data = await response.json();
-      WebApp.showAlert(`Success: ${data.message}`);
+      console.log('Success:', data);
+      
     } catch (error) {
-      console.error('Error:', error);
-      WebApp.showAlert(`Failed to save data. Please try again. ${error}`);
+      console.error('Full fetch error:', error);
+      WebApp.showAlert(`Error: ${error}`);
     }
   };
 

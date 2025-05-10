@@ -21,6 +21,10 @@ interface TelegramUser {
 }
 
 function App() {
+
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+
   const [points, setPoints] = useState(0)
   const [multiplier, setMultiplier] = useState(1)
   const [lastTapTime, setLastTapTime] = useState(0)
@@ -30,7 +34,7 @@ function App() {
   const [showProfile, setShowProfile] = useState(false)
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [playerName, setPlayerName] = useState('Player')
-  const [telegramUser, setTelegramUser] = useState<TelegramUser>({})
+  const [telegramUserId, setTelegramUser] = useState<TelegramUser>({})
 
   useEffect(() => {
     // Initialize WebApp
@@ -75,18 +79,17 @@ function App() {
   }
 
   const saveScore = async () => {
-    const telegramUserId = WebApp.initDataUnsafe?.user?.id;
-
-    if (!telegramUserId) {
-      WebApp.showAlert('Error: Could not identify your Telegram user ID.');
-      return;
-    }
-
     try {
-      const response = await fetch('/api/points', {
+      setLoading(true)
+      // Get Telegram user data
+      const telegramUserId = WebApp.initDataUnsafe?.user?.id;
+      
+      // Example POST request to your backend
+      const response = await fetch('https://press-gitanas-anas-projects-1a6a40c2.vercel.app/api/points', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Include Telegram initData for verification
           'Authorization': `tma ${WebApp.initData}`
         },
         body: JSON.stringify({
@@ -95,26 +98,15 @@ function App() {
           taps: totalTaps,
           multiplier,
           playerName,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        WebApp.showAlert('Score saved to the server!');
-        // Optionally update local state with the server's response if needed
-        // For example, if the server returns the updated user data:
-        // setPoints(data.data.points);
-        // setTotalTaps(data.data.taps);
-        // setMultiplier(data.data.multiplier);
-        // setPlayerName(data.data.playerName);
-      } else {
-        WebApp.showAlert(`Error saving score: ${data.error || 'Something went wrong.'}`);
-        console.error('Error saving score:', data);
-      }
+        })
+      })
+      
+      const result = await response.json()
+      setData(result)
     } catch (error) {
-      WebApp.showAlert('Failed to connect to the server. Please try again later.');
-      console.error('Error sending score to backend:', error);
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
     }
   }
 

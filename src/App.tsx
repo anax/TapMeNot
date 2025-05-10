@@ -121,6 +121,33 @@ function App() {
     }
   }
 
+  const sendDataToBackend = async () => {
+    try {
+      const response = await fetch('https://press-gitanas-anas-projects-1a6a40c2.vercel.app/api/points', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${WebApp.initData}` // For authentication
+        },
+        body: JSON.stringify({
+          telegramUserId: WebApp.initDataUnsafe.user?.id,
+          points: 100,
+          // other data...
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      WebApp.showAlert(`Success: ${data.message}`);
+    } catch (error) {
+      console.error('Error:', error);
+      WebApp.showAlert('Failed to save data. Please try again.');
+    }
+  };
+
   const handleNameChange = (newName: string) => {
     setPlayerName(newName)
     localStorage.setItem('tapMeNotPlayerName', newName)
@@ -164,7 +191,7 @@ function App() {
       <BottomMenu
         onProfileClick={() => setShowProfile(true)}
         onLeaderboardClick={() => setShowLeaderboard(true)}
-        onSaveClick={saveScore}
+        onSaveClick={sendDataToBackend}
       />
       {showLeaderboard && (
         <Leaderboard

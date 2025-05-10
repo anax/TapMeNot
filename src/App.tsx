@@ -144,7 +144,7 @@ function App() {
       WebApp.showAlert(`Success: ${data.message}`);
     } catch (error) {
       console.error('Error:', error);
-      WebApp.showAlert('Failed to save data. Please try again.');
+      WebApp.showAlert(`Failed to save data. Please try again. ${error}`);
     }
   };
 

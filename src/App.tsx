@@ -12,7 +12,7 @@ interface LeaderboardEntry {
   date: string;
 }
 
-interface TelegramUser {
+interface TelegramUserId {
   id?: number;
   first_name?: string;
   last_name?: string;
@@ -33,7 +33,7 @@ function App() {
   const [showProfile, setShowProfile] = useState(false)
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [playerName, setPlayerName] = useState('Player')
-  const [telegramUser, setTelegramUser] = useState<TelegramUser>({})
+  const [telegramUserId, setTelegramUserId] = useState<TelegramUserId>({})
 
   useEffect(() => {
     // Initialize WebApp
@@ -44,7 +44,7 @@ function App() {
     const tgUser = WebApp.initDataUnsafe?.user
     if (tgUser) {
       setPlayerName(tgUser.first_name || 'Player')
-      setTelegramUser({
+      setTelegramUserId({
         id: tgUser.id,
         first_name: tgUser.first_name,
         last_name: tgUser.last_name,
@@ -130,10 +130,10 @@ function App() {
           'Authorization': `Bearer ${WebApp.initData}` // For authentication
         },
         body: JSON.stringify({
-          telegramUserId: WebApp.initDataUnsafe.user?.id,
-          points: 100,
-          taps: 50,
-          multiplier: 2,
+          telegramUserId: telegramUserId,
+          points: points,
+          taps: totalTaps,
+          multiplier: multiplier,
           playerName: WebApp.initDataUnsafe.user?.first_name || 'Player'
         })
       });
@@ -209,7 +209,7 @@ function App() {
           multiplier={multiplier}
           onNameChange={handleNameChange}
           onClose={() => setShowProfile(false)}
-          telegramUser={telegramUser}
+          telegramUser={telegramUserId}
         />
       )}
     </div>

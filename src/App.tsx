@@ -130,7 +130,7 @@ function App() {
           'Authorization': `Bearer ${WebApp.initData}` // For authentication
         },
         body: JSON.stringify({
-          telegramUserId: telegramUserId,
+          telegramUserId: telegramUserId.id,
           points: points,
           taps: totalTaps,
           multiplier: multiplier,

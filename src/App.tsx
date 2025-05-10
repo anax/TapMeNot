@@ -87,6 +87,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `tma ${WebApp.initData}`
         },
         body: JSON.stringify({
           telegramUserId,

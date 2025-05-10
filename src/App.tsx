@@ -90,7 +90,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Telegram ${WebApp.initData}`
+          'Authorization': `Bearer ${WebApp.initData}`
         },
         body: JSON.stringify({
           telegramUserId,

@@ -123,7 +123,7 @@ function App() {
 
   const sendDataToBackend = async () => {
     try {
-      const response = await fetch('https://press-gitanas-anas-projects-1a6a40c2.vercel.app/api/points', {
+      const response = await fetch('https://press-five.vercel.app/api/points', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

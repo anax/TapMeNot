@@ -132,7 +132,9 @@ function App() {
         body: JSON.stringify({
           telegramUserId: WebApp.initDataUnsafe.user?.id,
           points: 100,
-          // other data...
+          taps: 50,
+          multiplier: 2,
+          playerName: WebApp.initDataUnsafe.user?.first_name || 'Player'
         })
       });
   
